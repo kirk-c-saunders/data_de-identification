@@ -15,14 +15,13 @@ RETURN
 			THEN NRCD.NewRecordCreateDate 
 		WHEN @ProvidedTime IS NULL /* AND @IncludeTime = 1 */
 			/* Add Random number of milliseconds up to 24 hours */
-			THEN DATEADD(MILLISECOND, NRCD.ModuloDividendAndMultiplier % 86400000, NRCD.NewRecordCreateDate)
+			THEN DATEADD(MILLISECOND, MDAM.ModuloDividendAndMultiplier % 86400000, NRCD.NewRecordCreateDate)
 		ELSE /* @ProvidedTime IS NULL AND @IncludeTime = 1 */
 			DATEADD(MILLISECOND, DATEDIFF(MILLISECOND, '00:00:00', @ProvidedTime), NRCD.NewRecordCreateDate)
 		END AS NewRecordCreateDate
-	FROM 
+	FROM [dataDeidentification].[ModuloDividendAndMultiplier] (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
+	CROSS APPLY
 	(
-		SELECT MDAM.ModuloDividendAndMultiplier
-				,DATEADD(DAY, MDAM.ModuloDividendAndMultiplier % DATEDIFF(DAY, @RangeStartDate, CURRENT_TIMESTAMP), @RangeStartDate) AS NewRecordCreateDate
-		FROM [dataDeidentification].[ModuloDividendAndMultiplier] (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
+		SELECT DATEADD(DAY, MDAM.ModuloDividendAndMultiplier % DATEDIFF(DAY, @RangeStartDate, CURRENT_TIMESTAMP), @RangeStartDate) AS NewRecordCreateDate
 	) AS NRCD
 GO
