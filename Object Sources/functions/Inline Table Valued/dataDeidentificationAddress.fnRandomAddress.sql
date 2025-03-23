@@ -1,4 +1,4 @@
-CREATE FUNCTION [dataDeidentificationAddress].[RandomAddress]
+CREATE FUNCTION [dataDeidentificationAddress].[fnRandomAddress]
 (
 	@PercentOfAddressesWithLine2 DECIMAL(2,2)
 	,@ModuloDividend INT
@@ -17,7 +17,7 @@ RETURN
 	,CSZ.StateName
 	,CSZ.StateAbbreviation
 	,CSZ.ZipCode
-	FROM dataDeidentification.ModuloDividendAndMultiplier (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
+	FROM dataDeidentification.fnModuloDividendAndMultiplier (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
 	JOIN (SELECT MAX(ALNt.AddressLineNameId) AS MaxAddressLineId FROM dataDeidentificationAddress.AddressLineName AS ALNt) AS MALN ON 1 = 1
 	JOIN (SELECT MAX(SSt.StreetStuffixId) AS MaxStreetStuffixId FROM dataDeidentificationAddress.StreetSuffix AS SSt) AS MSS ON 1 = 1
 	JOIN (SELECT MAX(AL2St.AddressLine2SuffixId) AS MaxAddressLine2SuffixId FROM dataDeidentificationAddress.AddressLine2Suffix AS AL2St) AS MAL2S ON 1 = 1

@@ -1,4 +1,4 @@
-CREATE FUNCTION [dataDeidentificationAddress].[RealAddress]
+CREATE FUNCTION [dataDeidentificationAddress].[fnRealAddress]
 (
 	@ModuloDividend INT
 	,@ModuloDividendMultiplier TINYINT = 1
@@ -14,6 +14,6 @@ RETURN
 	,CA.ZipCode
 	FROM dataDeidentificationAddress.CompleteAddress AS CA
 	JOIN (SELECT MAX(CompleteAddressId) AS MaxCompleteAddressId FROM dataDeidentificationAddress.CompleteAddress AS tCA) AS MCA ON 1 = 1
-	CROSS APPLY dataDeidentification.ModuloDividendAndMultiplier (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
+	CROSS APPLY dataDeidentification.fnModuloDividendAndMultiplier (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
 	WHERE (CAST(MDAM.ModuloDividendAndMultiplier AS INT) % MCA.MaxCompleteAddressId) + 1 = CA.CompleteAddressId
 GO

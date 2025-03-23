@@ -1,4 +1,4 @@
-CREATE FUNCTION [dataDeidentification].[RecordCreateDate]
+CREATE FUNCTION [dataDeidentification].[fnRecordCreateDate]
 (
 	@RangeStartDate DATETIME = '2015-01-01'
 	,@IncludeTime BIT = 1
@@ -19,7 +19,7 @@ RETURN
 		ELSE /* @ProvidedTime IS NULL AND @IncludeTime = 1 */
 			DATEADD(MILLISECOND, DATEDIFF(MILLISECOND, '00:00:00', @ProvidedTime), NRCD.NewRecordCreateDate)
 		END AS NewRecordCreateDate
-	FROM [dataDeidentification].[ModuloDividendAndMultiplier] (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
+	FROM dataDeidentification.fnModuloDividendAndMultiplier (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
 	CROSS APPLY
 	(
 		SELECT DATEADD(DAY, MDAM.ModuloDividendAndMultiplier % DATEDIFF(DAY, @RangeStartDate, CURRENT_TIMESTAMP), @RangeStartDate) AS NewRecordCreateDate

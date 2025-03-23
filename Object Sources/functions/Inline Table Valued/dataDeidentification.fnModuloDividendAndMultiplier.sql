@@ -1,4 +1,4 @@
-CREATE FUNCTION [dataDeidentification].[ModuloDividendAndMultiplier]
+CREATE FUNCTION [dataDeidentification].[fnModuloDividendAndMultiplier]
 (
 	@ModuloDividend INT
 	,@ModuloDividendMultiplier TINYINT = 1

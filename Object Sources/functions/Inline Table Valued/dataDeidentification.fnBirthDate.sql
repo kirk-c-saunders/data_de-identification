@@ -1,4 +1,4 @@
-CREATE FUNCTION [dataDeidentification].[BirthDate]
+CREATE FUNCTION [dataDeidentification].[fnBirthDate]
 (
 	@InputBirthDate DATETIME
 	,@DayRange INT = 1095 /* Approximately 3 years in days */
@@ -15,5 +15,5 @@ RETURN
 		ELSE /* MDAM.ModuloDividendAndMultiplier % 2 <> 0 */
 			DATEADD(DAY, (MDAM.ModuloDividendAndMultiplier % @DayRange) * -1, @InputBirthDate)
 		END AS NewBirthDate
-	FROM dataDeidentification.ModuloDividendAndMultiplier (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
+	FROM dataDeidentification.fnModuloDividendAndMultiplier (@ModuloDividend, @ModuloDividendMultiplier) AS MDAM
 GO
