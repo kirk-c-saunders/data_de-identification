@@ -1,4 +1,4 @@
-CREATE FUNCTION [dataDeidentification].[fnMiddleInitial]
+CREATE FUNCTION [dataDeidentificationPersonName].[fnMiddleInitial]
 (
 	@ModuloDividend INT
 	,@ModuloDividendMultiplier TINYINT = 1

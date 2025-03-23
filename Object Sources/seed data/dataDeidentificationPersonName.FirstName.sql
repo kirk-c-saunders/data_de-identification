@@ -1,5 +1,5 @@
 /* Copied from: https://www.ssa.gov/oact/babynames/decades/century.html on 3/22/2025 */
-INSERT INTO dataDeidentification.FirstName (FirstName, Gender, GenderSequenceId)
+INSERT INTO dataDeidentificationPersonName.FirstName (FirstName, Gender, GenderSequenceId)
 VALUES ('James', 'M', 1)
 ,('Michael', 'M', 2)
 ,('Robert', 'M', 3)

@@ -1,5 +1,5 @@
 /* Copied from: https://babynames.com/blogs/names/1000-most-popular-last-names-in-the-u-s/ on 3/22/2025 */
-INSERT INTO dataDeidentification.LastName (LastName)
+INSERT INTO dataDeidentificationPersonName.LastName (LastName)
 VALUES ('Smith')
 ,('Johnson')
 ,('Williams')
