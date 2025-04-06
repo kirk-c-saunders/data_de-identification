@@ -1,44 +1,46 @@
 CREATE PROCEDURE [dataDeidentificationIdentifier].[StoLoadSmallIntIdentifier]
 (
-	@MaxSmallIntIdentifierValue SMALLINT = 32767
+	@MaxIdentifierValue SMALLINT = 32767
 )
 AS
 BEGIN	
-	DECLARE @CurrentSmallIntIdentifierMax SMALLINT = 0;
+	SET NOCOUNT ON;
+	
+	DECLARE @CurrentIdentifierMax SMALLINT = 0;
 
-	IF(@MaxSmallIntIdentifierValue <= 0 OR @MaxSmallIntIdentifierValue IS NULL)
+	IF(@MaxIdentifierValue <= 0 OR @MaxIdentifierValue IS NULL)
 	BEGIN
-		RAISERROR('@MaxSmallIntIdentifierValue must have a positive value', 16, 1);
+		RAISERROR('@MaxIdentifierValue must have a positive value', 16, 1);
 	END;
 
-	SELECT @CurrentSmallIntIdentifierMax = MAX(SII.ExistingSmallInt)
+	SELECT @CurrentIdentifierMax = MAX(SII.ExistingIdentifier)
 	FROM dataDeidentificationIdentifier.SmallIntIdentifier AS SII;
 
-	IF(COALESCE(@CurrentSmallIntIdentifierMax, 0) = 0)
+	IF(COALESCE(@CurrentIdentifierMax, 0) = 0)
 	BEGIN
 		INSERT INTO dataDeidentificationIdentifier.SmallIntIdentifier
 		(
-			SortingRandomizer
+			NewIdentifier
 		)
 		VALUES
 		(
-			NEWID()
+			0 /* StoFinalizeSmallIntIdentifier will populate this with its offical value */
 		);
 
-		SET @CurrentSmallIntIdentifierMax = 1;
+		SET @CurrentIdentifierMax = 1;
 	END;
 
-	WHILE (@CurrentSmallIntIdentifierMax < @MaxSmallIntIdentifierValue)
+	WHILE (@CurrentIdentifierMax < @MaxIdentifierValue)
 	BEGIN
 		INSERT INTO dataDeidentificationIdentifier.SmallIntIdentifier
 		(
-			SortingRandomizer
+			NewIdentifier
 		)
-		SELECT TOP(@MaxSmallIntIdentifierValue - @CurrentSmallIntIdentifierMax)
-		NEWID() AS SortingRandomizer
+		SELECT TOP(@MaxIdentifierValue - @CurrentIdentifierMax)
+		0 AS NewIdentifier /* StoFinalizeSmallIntIdentifier will populate this with its offical value */
 		FROM dataDeidentificationIdentifier.SmallIntIdentifier;
 
-		SELECT @CurrentSmallIntIdentifierMax = MAX(SII.ExistingSmallInt)
+		SELECT @CurrentIdentifierMax = MAX(SII.ExistingIdentifier)
 		FROM dataDeidentificationIdentifier.SmallIntIdentifier AS SII;
 	END;
 END;

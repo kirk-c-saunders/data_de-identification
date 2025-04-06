@@ -1,24 +1,20 @@
 CREATE PROCEDURE [dataDeidentificationIdentifier].[StoFinalizeSmallIntIdentifier]
 AS
 BEGIN
+	SET NOCOUNT ON;
+	
 	UPDATE SII
-	SET SII.NewSmallInt = NID.NewSmallInt
+	SET SII.NewIdentifier = NID.NewIdentifier
 	FROM dataDeidentificationIdentifier.SmallIntIdentifier AS SII
 	JOIN
 	(
-		SELECT SIIt.ExistingSmallInt
-		,ROW_NUMBER() OVER (ORDER BY SIIt.SortingRandomizer) AS NewSmallInt
+		SELECT SIIt.ExistingIdentifier
+		,ROW_NUMBER() OVER (ORDER BY SIIt.SortingRandomizer) AS NewIdentifier
 		FROM dataDeidentificationIdentifier.SmallIntIdentifier AS SIIt
-	) AS NID ON NID.ExistingSmallInt = SII.ExistingSmallInt;
+	) AS NID ON NID.ExistingIdentifier = SII.ExistingIdentifier;
 
-	DROP INDEX UQ_DataDeidentificationIdentifier_SmallIntIdentifier_NewSmallInt
-	ON dataDeidentificationIdentifier.SmallIntIdentifier;
-
-	ALTER TABLE dataDeidentificationIdentifier.SmallIntIdentifier
-	ALTER COLUMN NewSmallInt SMALLINT NOT NULL;	
-	
-	CREATE UNIQUE NONCLUSTERED INDEX [UQ_DataDeidentificationIdentifier_SmallIntIdentifier_NewSmallInt]
-	ON [dataDeidentificationIdentifier].[SmallIntIdentifier] ([NewSmallInt] ASC)
+	ALTER INDEX UQ_DataDeidentificationIdentifier_SmallIntIdentifier_NewIdentifier
+	ON dataDeidentificationIdentifier.SmallIntIdentifier REBUILD
 	/* WITH (ONLINE = ON) - Add In if desired and able to */ ;
 
 	ALTER TABLE dataDeidentificationIdentifier.SmallIntIdentifier

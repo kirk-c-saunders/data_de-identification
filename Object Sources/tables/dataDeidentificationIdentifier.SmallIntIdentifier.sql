@@ -1,18 +1,18 @@
 CREATE TABLE [dataDeidentificationIdentifier].[SmallIntIdentifier]
 (
-	[ExistingSmallInt] SMALLINT IDENTITY(1, 1) NOT NULL
-	,[SortingRandomizer] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [TempSmallIntDefault] DEFAULT (NEWID()) /* Column will be dropped after new identifier is created */
-	,[NewSmallInt] SMALLINT NULL /* Once fully populated, will be made NOT NULL */
-	,CONSTRAINT [PK_DataDeidentificationIdentifier_SmallIntIdentifier] PRIMARY KEY ([ExistingSmallInt] ASC)
+	[ExistingIdentifier] SMALLINT IDENTITY(1, 1) NOT NULL
+	,[NewIdentifier] SMALLINT NOT NULL
+	,[SortingRandomizer] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [TempSmallIntDefault] DEFAULT (NEWID()) /* Will be dropped after table is fully populated */ 
+	,CONSTRAINT [PK_DataDeidentificationIdentifier_SmallIntIdentifier] PRIMARY KEY ([ExistingIdentifier] ASC)
 );
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX [UQ_DataDeidentificationIdentifier_SmallIntIdentifier_NewSmallInt]
-	ON [dataDeidentificationIdentifier].[SmallIntIdentifier] ([NewSmallInt] ASC);
+CREATE UNIQUE NONCLUSTERED INDEX [UQ_DataDeidentificationIdentifier_SmallIntIdentifier_NewIdentifier]
+	ON [dataDeidentificationIdentifier].[SmallIntIdentifier] ([NewIdentifier] ASC);
 GO
 
-/* Index will be dropped and recreated once [NewSmallInt] is fully populated */
-ALTER INDEX [UQ_DataDeidentificationIdentifier_SmallIntIdentifier_NewSmallInt]
+/* Index will be rebuilt and activated once [NewIdentifier] is fully populated */
+ALTER INDEX [UQ_DataDeidentificationIdentifier_SmallIntIdentifier_NewIdentifier]
     ON [dataDeidentificationIdentifier].[SmallIntIdentifier]
 DISABLE;
 GO

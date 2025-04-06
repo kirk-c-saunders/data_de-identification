@@ -1,5 +1,5 @@
 CREATE TYPE [dataDeidentificationIdentifier].[UdtUniqueIdentifierIdentifier] AS TABLE
 (
-	[ExistingUniqueIdentifier] UNIQUEIDENTIFIER NOT NULL
+	[ExistingIdentifier] UNIQUEIDENTIFIER NOT NULL
 );
 GO

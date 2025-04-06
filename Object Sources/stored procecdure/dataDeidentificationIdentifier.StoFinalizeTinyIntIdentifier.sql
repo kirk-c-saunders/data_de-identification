@@ -1,25 +1,21 @@
 CREATE PROCEDURE [dataDeidentificationIdentifier].[StoFinalizeTinyIntIdentifier]
 AS
 BEGIN
+	SET NOCOUNT ON;
+
 	UPDATE TII
-	SET TII.NewTinyInt = NID.NewTinyInt
+	SET TII.NewIdentifier = NID.NewIdentifier
 	FROM dataDeidentificationIdentifier.TinyIntIdentifier AS TII
 	JOIN
 	(
-		SELECT TIIt.ExistingTinyInt
-		,ROW_NUMBER() OVER (ORDER BY TIIt.SortingRandomizer) AS NewTinyInt
+		SELECT TIIt.ExistingIdentifier
+		,ROW_NUMBER() OVER (ORDER BY TIIt.SortingRandomizer) AS NewIdentifier
 		FROM dataDeidentificationIdentifier.TinyIntIdentifier AS TIIt
-	) AS NID ON NID.ExistingTinyInt = TII.ExistingTinyInt;
+	) AS NID ON NID.ExistingIdentifier = TII.ExistingIdentifier;
 
-	DROP INDEX UQ_DataDeidentificationIdentifier_TinyIntIdentifier_NewTinyInt
-		ON dataDeidentificationIdentifier.TinyIntIdentifier
-
-	ALTER TABLE dataDeidentificationIdentifier.TinyIntIdentifier
-	ALTER COLUMN NewTinyInt TINYINT NOT NULL;
-
-	CREATE UNIQUE NONCLUSTERED INDEX UQ_DataDeidentificationIdentifier_TinyIntIdentifier_NewTinyInt
-	ON dataDeidentificationIdentifier.TinyIntIdentifier (NewTinyInt ASC)
-	/* WITH (ONLINE = ON) - Add In if desired and able to */ ;
+	ALTER INDEX UQ_DataDeidentificationIdentifier_TinyIntIdentifier_NewIdentifier
+	ON dataDeidentificationIdentifier.TinyIntIdentifier REBUILD
+	/* WITH (ONLINE = ON) - Add In if desired and able to */ ;	
 
 	ALTER TABLE dataDeidentificationIdentifier.TinyIntIdentifier
 	DROP CONSTRAINT TempTinyIntDefault;

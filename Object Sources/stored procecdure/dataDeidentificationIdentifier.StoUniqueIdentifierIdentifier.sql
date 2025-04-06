@@ -4,14 +4,16 @@ CREATE PROCEDURE [dataDeidentificationIdentifier].[StoUniqueIdentifierIdentifier
 )
 AS
 BEGIN
+	SET NOCOUNT ON;
+	
 	INSERT INTO dataDeidentificationIdentifier.UniqueIdentifierIdentifier
 	(
-		ExistingUniqueIdentifier
+		ExistingIdentifier
 	)
-	SELECT EUI.ExistingUniqueIdentifier
+	SELECT EUI.ExistingIdentifier
 	FROM @ExistingUniqueIdentifier AS EUI
 	EXCEPT /* Using EXCEPT to insert a unique list of values that are not already stored */ 
-	SELECT UII.ExistingUniqueIdentifier
+	SELECT UII.ExistingIdentifier
 	FROM dataDeidentificationIdentifier.UniqueIdentifierIdentifier AS UII;
 END;
 GO
